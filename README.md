@@ -136,12 +136,12 @@ except sr.RequestError as e:
 	print("Could not request results from Microsoft Bing Voice Recognition service; {0}".format(e))
 ```
 
-##开门指令
+## 开门指令
 
 如果访客选择了“Open the door”指令，摄像头将自动获取一张访客的照片，并判断是否给开门。
 
 **具体的逻辑为**：
-分析判断由前面访客的需求音频转换而成的文本中是否含有“Open”这一关键词——如有，则继续；如无，则程序结束——播放photo.wav（Security-Door-based-on-raspberry-pi/photo.wav）——
+分析判断由前面访客的需求音频转换而成的文本中是否含有“Open”这一关键词——如有，则继续；如无，则程序结束——播放photo.wav（`Security-Door-based-on-raspberry-pi/photo.wav`）——
 与已经训练好的库中的人像做对比，
 
 
