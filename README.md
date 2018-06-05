@@ -31,6 +31,7 @@ sudo apt-get -y install alsa-utils alsa-tools alsa-tools-gui alsamixergui
 在树莓派上安装语音识别的库：
 ```
 pip3 install SpeechRecogniton
+```
 
 发光二极管（绿灯）接线：长的引脚接作为信号线的BOARD_11，短的引脚接作为地线的BOARD_39。
 
