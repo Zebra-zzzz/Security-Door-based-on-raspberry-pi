@@ -22,7 +22,7 @@ ___
 
 **具体的逻辑为**：
 
-访客触动门禁——门禁连接的姿态传感器接收到振动——播放welcome.wav(`Security-Door-based-on-raspberry-pi/welcome.wav`)，提醒用户有三种选择——开始闪绿灯，提醒用户正在录音，且灯闪频率会随录音终止时间的接近越来越快——用户给出反馈——对用户的命令做出识别（语音转文字）
+访客触动门禁——门禁连接的姿态传感器接收到振动——播放welcome.wav(`Security-Door-based-on-raspberry-pi/welcome.wav`)，提醒用户有三种选择——开始闪绿灯，提醒访客正在录音，且灯闪频率会随录音终止时间的接近越来越快——访客给出反馈——对访客的命令做出识别（语音转文字）
 
 **NOTE:**这里会用到**微软的认知服务**（[自行申请](https://docs.microsoft.com/en-us/azure/cognitive-services/speech/https://azure.microsoft.com/zh-cn/try/cognitive-services/?apiSlug=face-api&country=China&allowContact=true&unauthorized=1)），通过调用微软的[speech-to-text API](https://docs.microsoft.com/en-us/azure/cognitive-services/speech/home), 实现对用户发出需求的音频做出识别。
 
@@ -141,8 +141,7 @@ except sr.RequestError as e:
 如果访客选择了“Open the door”指令，摄像头将自动获取一张访客的照片，并判断是否给开门。
 
 **具体的逻辑为**：
-分析判断由前面访客的需求音频转换而成的文本中是否含有“Open”这一关键词——如有，则继续；如无，则程序结束——播放photo.wav（`Security-Door-based-on-raspberry-pi/photo.wav`）——
-与已经训练好的库中的人像做对比，
+分析判断由前面访客的需求音频转换而成的文本中是否含有“Open”这一关键词——如有，则继续；如无，则程序结束——播放photo.wav（`Security-Door-based-on-raspberry-pi/photo.wav`），提醒访客将要拍照——红灯频闪，提醒访客正在拍照倒计时，且灯闪频率会随正式开始拍照时间的接近越来越快——发出“咔擦”一声，正式开始拍照——与已经训练好的库中的人像做对比，
 
 
 
