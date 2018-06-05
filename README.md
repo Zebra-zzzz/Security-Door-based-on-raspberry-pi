@@ -15,9 +15,25 @@ ___
 
 访客首先需要唤醒门禁，让门禁开始工作。门禁则需要提醒用户说出自己需要的服务并进行识别。
 
-具体的逻辑为：
+**具体的逻辑为**：
 
+访客触动门禁——门禁连接的姿态传感器接收到振动——播放welcome.wav(`Security-Door-based-on-raspberry-pi/welcome.wav`)，提醒用户有三种选择——用户给出反馈——对用户的命令做出识别（语音转文字）
 
+**NOTE:**这里会用到**微软的认知服务**，通过调用微软的（[speech-to-text API](https://docs.microsoft.com/en-us/azure/cognitive-services/speech/home)）, 实现对用户发出需求的音频做出识别。
+
+在树莓派上安装录音的必要工具包：
+```linux
+sudo apt-get update 
+sudo apt-get upgrade 
+sudo apt-get -y install alsa-utils alsa-tools alsa-tools-gui alsamixergui
+```
+
+在树莓派上安装语音识别的库：
+```py
+pip3 install SpeechRecogniton
+```
+
+具体的代码如下：
 ```py
 
 ```
