@@ -19,7 +19,7 @@ ___
 
 访客触动门禁——门禁连接的姿态传感器接收到振动——播放welcome.wav(`Security-Door-based-on-raspberry-pi/welcome.wav`)，提醒用户有三种选择——开始闪绿灯，提醒用户正在录音，且灯闪频率会随录音终止时间的接近越来越快——用户给出反馈——对用户的命令做出识别（语音转文字）
 
-**NOTE:**这里会用到**微软的认知服务**，通过调用微软的（[speech-to-text API](https://docs.microsoft.com/en-us/azure/cognitive-services/speech/home)）, 实现对用户发出需求的音频做出识别。
+**NOTE:**这里会用到**微软的认知服务**（[自行申请](https://docs.microsoft.com/en-us/azure/cognitive-services/speech/https://azure.microsoft.com/zh-cn/try/cognitive-services/?apiSlug=face-api&country=China&allowContact=true&unauthorized=1)），通过调用微软的[speech-to-text API](https://docs.microsoft.com/en-us/azure/cognitive-services/speech/home), 实现对用户发出需求的音频做出识别。
 
 在树莓派上安装录音的必要工具包：
 ```
@@ -41,7 +41,7 @@ sudo apt-get update
 sudo apt-get -y install python-rpi.gpio
 ```
 
-**具体的执行代码如下**：
+**具体的执行代码如下**(对代码中speech_key做了留白，请自行去[官网申请](https://docs.microsoft.com/en-us/azure/cognitive-services/speech/https://azure.microsoft.com/zh-cn/try/cognitive-services/?apiSlug=face-api&country=China&allowContact=true&unauthorized=1)）：
 ```py
 import RPi.GPIO as GPIO
 import os
@@ -120,7 +120,7 @@ r = sr.Recognizer()
 with sr.AudioFile(audioFile) as source:
 	audio = r.record(source) 
 
-speech_key = "34c7815245934e4a8e088956af4e62d7"  
+speech_key = ""  
 
 try:
     speech_result = r.recognize_bing(audio, key=speech_key)
