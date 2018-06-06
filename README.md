@@ -271,7 +271,7 @@ if "open" in speech_result or "Open" in speech_result:
 
 **具体的逻辑为**：([    ]部分为循环)
 
-分析判断由前面访客的需求音频转换而成的文本中是否含有“message”这一关键词——如有，则继续；如无，则程序结束——[*播放 leave.wav（`Security-Door-based-on-raspberry-pi/leave.wav`），提醒访客将要拍照——绿灯频闪，提醒访客正在录音——录音结束，提醒访客确认留言（`Security-Door-based-on-raspberry-pi/confirm.wav`）——播放留言音频（`Security-Door-based-on-raspberry-pi/message.wav`）——提醒访客做出选择（`Security-Door-based-on-raspberry-pi/save_or_delete.wav`）——分析判断由访客的选择音频转换而成的文本中是否含有“no”这一关键词——如有，则继续；如无，则告知访客留言已保存（`Security-Door-based-on-raspberry-pi/remindsaved.wav`*]
+分析判断由前面访客的需求音频转换而成的文本中是否含有“message”这一关键词——如有，则继续；如无，则程序结束——[*播放 leave.wav（`Security-Door-based-on-raspberry-pi/leave.wav`），提醒访客将要拍照——绿灯频闪，提醒访客正在录音——录音结束，提醒访客确认留言（`Security-Door-based-on-raspberry-pi/confirm.wav`）——播放留言音频（`Security-Door-based-on-raspberry-pi/message.wav`）——提醒访客做出选择（`Security-Door-based-on-raspberry-pi/save_or_delete.wav`）——绿灯频闪，提醒访客正在录音——录音结束，分析判断由访客的选择音频转换而成的文本中是否含有“no”这一关键词——如有，则继续；如无，则告知访客留言已保存（`Security-Door-based-on-raspberry-pi/remindsaved.wav`*]
 
 **具体代码如下**(对代码中speech_key做了留白，请自行去[官网申请](https://docs.microsoft.com/en-us/azure/cognitive-services/speech/https://azure.microsoft.com/zh-cn/try/cognitive-services/?apiSlug=face-api&country=China&allowContact=true&unauthorized=1)）：
 ```py
