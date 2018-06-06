@@ -33,6 +33,8 @@ raspistill -w 640 -h 480 -o 3.jpg
 
 **NOTE:** 代码中留白的personGroupId请自行定义一个值，该值是一个只由数字、小写字母、“-”、“_”组成的不超过64个字符长的字符串。只有在训练的时候定义不同的值，才能保证如果有建立多个人的人像库的需求时可以共用一个key。
 ```py
+import cognitive_face as CF
+import os
 import json
 
 def GetFileListFromDir(dir):
@@ -120,6 +122,11 @@ import RPi.GPIO as GPIO
 import os
 import speech_recognition as sr
 import wave
+import time
+import struct
+import sys
+import pigpio
+
 
 def light(pin, times, delay1, delay2):
 	GPIO.setmode(GPIO.BOARD)
@@ -218,6 +225,15 @@ except sr.RequestError as e:
 
 **NOTE:** 代码中留白的personGroupId与前面训练时定义的值需保持相同。
 ```py
+import RPi.GPIO as GPIO
+import os
+import speech_recognition as sr
+import wave
+import time
+import cognitive_face as CF
+import os
+import json
+
 #control the steering gear
 def open_door():
             GPIO.setup(12,GPIO.OUT)
@@ -269,12 +285,18 @@ if "open" in speech_result or "Open" in speech_result:
 ## 留言指令
 如果访客选择了“leave a message”指令，门禁将提醒访客开始留言，稍后播放后将确认访客是否需要重新录制。
 
-**具体的逻辑为**：([                  ]部分为循环)
+**具体的逻辑为**：([]部分为循环)
 
 分析判断由前面访客的需求音频转换而成的文本中是否含有“message”这一关键词——如有，则继续；如无，则程序结束——[*播放 leave.wav（`Security-Door-based-on-raspberry-pi/leave.wav`），提醒访客将要拍照——绿灯频闪，提醒访客正在录音——录音结束，提醒访客确认留言（`Security-Door-based-on-raspberry-pi/confirm.wav`）——播放留言音频（`Security-Door-based-on-raspberry-pi/message.wav`）——提醒访客做出选择（`Security-Door-based-on-raspberry-pi/save_or_delete.wav`）——绿灯频闪，提醒访客正在录音——录音结束，分析判断由访客的选择音频转换而成的文本中是否含有“no”这一关键词——如有，则继续；如无，则告知访客留言已保存（`Security-Door-based-on-raspberry-pi/remindsaved.wav`*]
 
 **具体代码如下**(对代码中speech_key做了留白，请自行去[官网申请](https://docs.microsoft.com/en-us/azure/cognitive-services/speech/https://azure.microsoft.com/zh-cn/try/cognitive-services/?apiSlug=face-api&country=China&allowContact=true&unauthorized=1)）：
 ```py
+import os
+import speech_recognition as sr
+import RPi.GPIO as GPIO
+import time
+
+
 if "message" in speech_result or "Message" in speech_result:
     print("I will take a record for you, please leave a message right now")
     os.system('aplay leave.wav')
@@ -333,4 +355,83 @@ if "message" in speech_result or "Message" in speech_result:
                 print("Could not request results from Microsoft Bing Voice Recognition service; {0}".format(e))
     print("record has been successfully saved!")
     os.system('aplay remindsaved.wav')
+```
+
+## 与门语音（文字、图像）交互指令
+###文字、图像交互
+如果访客选择了“talk with the door”指令，门禁将等待用户键入一定信息或图片，并作出实时的聊天反馈，包括文字、图像和语音。
+
+**具体的逻辑为**：
+
+分析判断由前面访客的需求音频转换而成的文本中是否含有“talk”这一关键词——如有，则继续；如无，则程序结束——（首次使用时将输出一张微信二维码等待用户扫描并在树莓派上登陆）——用户输入文本信息或者图片——门禁给出应答（文字、图像或语音）
+**NOTE:** 
+
+因为[微软小冰](http://www.msxiaoice.com/)暂未开放API，所以这里利用[ichat模块](http://itchat.readthedocs.io/zh/latest/)，并将消息发送给微信联系人中的[小冰](http://www.msxiaoice.com/)，同时获取[小冰](http://www.msxiaoice.com/)返回的信息，实现间接对[微软小冰](http://www.msxiaoice.com/)的调用。
+
+**具体代码如下**：
+
+```py
+import itchat
+import sys
+import os
+from itchat.content import *
+from PIL import Image
+import threading
+
+def send_message(message, userId):
+	itchat.send(message, toUserName = userId)
+
+def send_picture(userId):
+	print("I will take a photo and send it to ice:")
+	os.system("sudo raspistill -o try.jpg")
+	file = "try.jpg"
+	itchat.send_image(file, toUserName = userId)
+
+def xiaoice(iceId):
+	#make dirs for downloading pictures and recordings
+	if not os.path.exists('./picture'): 
+		os.mkdir('./picture')
+
+	if not os.path.exists('./recording'):
+		os.mkdir('./recording')
+
+	@itchat.msg_register([TEXT,PICTURE,RECORDING], isMpChat=True)
+	def xiaobing(msg):
+		#if xiao ice send two message at once, deal it with queue
+		if msg['Type'] == 'Text': #if xiaoice send a short message, put it into the queue
+			print("小冰：" + msg['Text']) 
+
+		if msg['Type'] == 'Picture':
+			fileName = './picture/' + msg['FileName']
+			with open(fileName, 'wb') as f: #download file
+				f.write(msg['Text']())
+			print("小冰发了一张图：")
+			image = Image.open(fileName) #show this picture
+			image.show()
+
+		if msg['Type'] == 'Recording':
+			fileName = './recording/' + msg['FileName']
+			with open(fileName, 'wb') as f: # download file
+				f.write(msg['Text']())
+			print("小冰说了一句话")
+			os.system('mplayer '+ fileName) # play this audio
+			
+		del msg 
+	itchat.run()
+
+if "talk" in speech_result or "Talk" in speech_result:
+	itchat.auto_login(enableCmdQR = 2, hotReload = True) #Login
+	
+	iceId = itchat.search_mps(name = "小冰")[0]['UserName']# get xiaoice's ID
+	t = threading.Thread(target=xiaoice, args=(iceId,))
+	t.start()
+	while 1:
+		line = sys.stdin.readline().strip()
+		if line != "":
+			if line == "send picture":
+				send_picture(iceId)
+			else:
+				send_message(line, iceId)
+		else:
+			break
 ```
