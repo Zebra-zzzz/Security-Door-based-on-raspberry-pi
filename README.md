@@ -215,8 +215,22 @@ except sr.RequestError as e:
 
 **具体的执行代码如下**(对代码中face_key做了留白，请自行去[官网申请](https://docs.microsoft.com/en-us/azure/cognitive-services/speech/https://azure.microsoft.com/zh-cn/try/cognitive-services/?apiSlug=face-api&country=China&allowContact=true&unauthorized=1)）：
 
-**NOTE: **代码中留白的personGroupId与前面训练时定义的值需保持相同。
+**NOTE:** 代码中留白的personGroupId与前面训练时定义的值需保持相同。
 ```py
+#control the steering gear
+def open_door():
+            GPIO.setup(12,GPIO.OUT)
+            p = GPIO.PWM(12,50)
+            p.start(0)
+            global onoff,dc, dir
+            onoff = GPIO.LOW
+            dc = 10
+            dir = 5
+            for i in range(23):
+                    dc += 5
+                    p.ChangeDutyCycle( dc/10 )
+                    time.sleep(0.1)
+                    
 if "open" in speech_result or "Open" in speech_result:
 	#Verify your face
 	face_key = ""
