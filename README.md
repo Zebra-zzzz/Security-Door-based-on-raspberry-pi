@@ -215,7 +215,7 @@ except sr.RequestError as e:
 
 **具体的执行代码如下**(对代码中face_key做了留白，请自行去[官网申请](https://docs.microsoft.com/en-us/azure/cognitive-services/speech/https://azure.microsoft.com/zh-cn/try/cognitive-services/?apiSlug=face-api&country=China&allowContact=true&unauthorized=1)）：
 
-**NOTE: ** 代码中留白的personGroupId与前面训练时定义的值需保持相同。
+ 代码中留白的personGroupId与前面训练时定义的值需保持相同。
 ```py
 if "open" in speech_result or "Open" in speech_result:
 	#Verify your face
