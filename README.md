@@ -11,6 +11,7 @@
 3.（彩蛋）访客选择跟门对话，实现实时的语音或文字&图片交流。
 
 **查看完整操作可直接跳到最后**
+![原型](https://github.com/Zebra-zzzz/Security-Door-based-on-raspberry-pi/blob/master/prototype.jpg) 
 
 ___
 ## 实现具体功能前的基本操作
@@ -543,7 +544,7 @@ cd ..
 cd ..
 python3 trainFace.py
 ```
-**NOTE:** (对代码中的KEY做了留白，请自行去[官网申请](https://docs.microsoft.com/en-us/azure/cognitive-services/speech/https://azure.microsoft.com/zh-cn/try/cognitive-services/?apiSlug=face-api&country=China&allowContact=true&unauthorized=1)）
+**NOTE:** 对代码中的KEY做了留白，请自行去[官网申请](https://docs.microsoft.com/en-us/azure/cognitive-services/speech/https://azure.microsoft.com/zh-cn/try/cognitive-services/?apiSlug=face-api&country=China&allowContact=true&unauthorized=1)
 
 **主门禁程序执行**
 ```
@@ -592,3 +593,14 @@ cd ~/Desktop/alexa-avs-sample-app/samples/companionService && npm start
 cd ~/Desktop/alexa-avs-sample-app/samples/javaclient && mvn exec:exec
 ```
 
+**3D打印的外壳**
+
+给各接口预留了空位，包括：顶盖的摄像头、两个发光二极管，右侧的电源插口、外接mini音响的3.5mm接口，后方的网线插口、usb麦克风接口，左侧的舵机与螺旋桨连接口、姿态传感器。
+
+stl文件：
+
+盒身：`Security-Door-based-on-raspberry-pi/model1.stl`
+
+盒盖：`Security-Door-based-on-raspberry-pi/model2.stl`
+
+预览：![模型预览](https://github.com/Zebra-zzzz/Security-Door-based-on-raspberry-pi/blob/master/model_preview.png) 
