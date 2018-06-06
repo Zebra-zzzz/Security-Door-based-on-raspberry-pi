@@ -269,6 +269,68 @@ if "open" in speech_result or "Open" in speech_result:
 ## 留言指令
 如果访客选择了“leave a message”指令，门禁将提醒访客开始留言，稍后播放后将确认访客是否需要重新录制。
 
-**具体的逻辑为**：([]部分为循环)
+**具体的逻辑为**：([    ]部分为循环)
 
-分析判断由前面访客的需求音频转换而成的文本中是否含有“message”这一关键词——如有，则继续；如无，则程序结束——[*播放leave.wav（`Security-Door-based-on-raspberry-pi/leave.wav`），提醒访客将要拍照——绿灯频闪，提醒访客正在录音——录音结束，提醒访客确认留言（`Security-Door-based-on-raspberry-pi/confirm.wav`）——播放留言音频（`Security-Door-based-on-raspberry-pi/message.wav`）——提醒访客做出选择（`Security-Door-based-on-raspberry-pi/save_or_delete.wav`）——分析判断由访客的选择音频转换而成的文本中是否含有“no”这一关键词——如有，则继续；如无，则告知访客留言已保存（`Security-Door-based-on-raspberry-pi/remindsaved.wav`*]
+分析判断由前面访客的需求音频转换而成的文本中是否含有“message”这一关键词——如有，则继续；如无，则程序结束——[*播放 leave.wav（`Security-Door-based-on-raspberry-pi/leave.wav`），提醒访客将要拍照——绿灯频闪，提醒访客正在录音——录音结束，提醒访客确认留言（`Security-Door-based-on-raspberry-pi/confirm.wav`）——播放留言音频（`Security-Door-based-on-raspberry-pi/message.wav`）——提醒访客做出选择（`Security-Door-based-on-raspberry-pi/save_or_delete.wav`）——分析判断由访客的选择音频转换而成的文本中是否含有“no”这一关键词——如有，则继续；如无，则告知访客留言已保存（`Security-Door-based-on-raspberry-pi/remindsaved.wav`*]
+
+**具体代码如下**(对代码中speech_key做了留白，请自行去[官网申请](https://docs.microsoft.com/en-us/azure/cognitive-services/speech/https://azure.microsoft.com/zh-cn/try/cognitive-services/?apiSlug=face-api&country=China&allowContact=true&unauthorized=1)）：
+```py
+if "message" in speech_result or "Message" in speech_result:
+    print("I will take a record for you, please leave a message right now")
+    os.system('aplay leave.wav')
+    os.system('arecord --device=plughw:1,0 --format S16_LE --rate 16000 -d 5 -c1 message.wav&')#record one or two
+    light(11, 15, 1.11, 0.1)
+    print("please confirm your message")
+    os.system('aplay confirm.wav')
+    os.system('aplay message.wav')
+    print("say yes to save the message or no to record again")
+    os.system('aplay save_or_delete.wav')
+    os.system('arecord --device=plughw:1,0 --format S16_LE --rate 16000 -d 5 -c1 decide.wav&')#record one or two
+    light(11, 15, 1.11, 0.1)
+    audioFile = "decide.wav"
+
+    #analysis your recording
+    r = sr.Recognizer()
+    with sr.AudioFile(audioFile) as source:
+            audio = r.record(source) 
+
+    speech_key = "34c7815245934e4a8e088956af4e62d7"  
+
+    try:
+        confirm_result = r.recognize_bing(audio, key=speech_key)
+        print(confirm_result.encode("utf-8"))
+    except sr.UnknownValueError:
+        print("Microsoft Bing Voice Recognition could not understand audio")
+    except sr.RequestError as e:
+            print("Could not request results from Microsoft Bing Voice Recognition service; {0}".format(e))
+    while "no" in confirm_result or "No" in confirm_result:
+        print("I will take a record for you, please leave a message right now")
+        os.system('aplay leave.wav')
+        os.system('arecord --device=plughw:1,0 --format S16_LE --rate 16000 -d 5 -c1 message.wav&')#record one or two
+        light(11, 15, 1.11, 0.1)
+        print("please confirm your message")
+        os.system('aplay confirm.wav')
+        os.system('aplay message.wav')
+        print("say yes to save your message or no to record again")
+        os.system('aplay save_or_delete.wav')
+        os.system('arecord --device=plughw:1,0 --format S16_LE --rate 16000 -d 5 -c1 decide.wav&')#record one or two
+        light(11, 15, 1.11, 0.1)
+        audioFile = "decide.wav"
+
+        #analysis your recording
+        r = sr.Recognizer()
+        with sr.AudioFile(audioFile) as source:
+                audio = r.record(source) 
+
+        speech_key = "34c7815245934e4a8e088956af4e62d7"  
+
+        try:
+            confirm_result = r.recognize_bing(audio, key=speech_key)
+            print(confirm_result.encode("utf-8"))
+        except sr.UnknownValueError:
+            print("Microsoft Bing Voice Recognition could not understand audio")
+        except sr.RequestError as e:
+                print("Could not request results from Microsoft Bing Voice Recognition service; {0}".format(e))
+    print("record has been successfully saved!")
+    os.system('aplay remindsaved.wav')
+```
