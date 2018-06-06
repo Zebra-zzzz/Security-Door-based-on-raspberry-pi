@@ -14,6 +14,7 @@
 **查看完整操作可直接跳到最后**
 
 <img src="https://github.com/Zebra-zzzz/Security-Door-based-on-raspberry-pi/blob/master/prototype.jpg" width="600" height="450" alt="原型"/>
+
 ___
 ## 实现具体功能前的基本操作
 ### 训练访客人像图库
