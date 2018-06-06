@@ -467,7 +467,7 @@ nano automated_install.sh
 ```
 
 在ProductID, ClientID, ClientSecret三栏后面分别填入在官网申请的AVS中对应的信息：
-![填写样例](http://www.baidu.com/img/bdlogo.gif) 
+![填写样例](https://github.com/Zebra-zzzz/Security-Door-based-on-raspberry-pi/blob/master/sample-script.png) 
 
 填写样例：
 * ProductID="RaspberryPi3"
