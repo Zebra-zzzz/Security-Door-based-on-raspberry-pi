@@ -450,6 +450,41 @@ if "talk" in speech_result or "Talk" in speech_result:
 ### 语音交互
 门禁将等待用户语音输入一段话，并做出实时的语音回复。
 
-**NOTE:** 这里调用了亚马逊
+**NOTE:** 这里调用了亚马逊[Alexa Voice Service](https://developer.amazon.com/zh/alexa-voice-service://www.msxiaoice.com/)的API，实现与访客之间较为智能、多功能的语音交互。（[参考官方DIY教程](https://github.com/ajot/alexa-avs-raspberry-pi)）
 
 **NOTE:** 收发信息和扫描二维码须需要借助显示器或者电脑端的VNC Viewer。
+
+获取官方sample app zip：
+```
+cd Desktop
+git clone https://github.com/ajot/alexa-avs-raspberry-pi.git
+```
+
+添加亚马逊开发者账号AVS相关信息（ProductID, ClientID, ClientSecret）：
+```
+cd ~/Desktop/alexa-avs-sample-app
+nano automated_install.sh
+```
+
+在ProductID, ClientID, ClientSecret三栏后面分别填入在官网申请的AVS中对应的信息：
+![填写样例](http://www.baidu.com/img/bdlogo.gif) 
+
+填写样例：
+* ProductID="RaspberryPi3"
+* ClientID="amzn.xxxxx.xxxxxxxxx"
+* ClientSecret="4e8cb14xxxxxxxxxxxxxxxxxxxxxxxxxxxxx6b4f9"
+
+运行脚本：(仅需首次使用时运行，需要大概20-30分钟）
+```
+bash automated_install.sh
+```
+
+开启新的命令行，授权使用AVS服务：
+```
+cd ~/Desktop/alexa-avs-sample-app/samples/companionService && npm start
+```
+
+再开启另一个新的命令行，运行样例应用：
+```
+cd ~/Desktop/alexa-avs-sample-app/samples/javaclient && mvn exec:exec
+```
