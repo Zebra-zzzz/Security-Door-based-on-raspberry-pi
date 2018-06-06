@@ -16,7 +16,7 @@ ___
 
 首先需要建立一个针对访客的人像库，以便后期门禁将拍摄到的访客图像与库中已有人像做对比以决定是否开门。
 
-**NOTE:**这里借用了**微软的认知服务**（[自行申请](https://docs.microsoft.com/en-us/azure/cognitive-services/speech/https://azure.microsoft.com/zh-cn/try/cognitive-services/?apiSlug=face-api&country=China&allowContact=true&unauthorized=1)），具体调用的API是[Face verification](https://azure.microsoft.com/en-us/services/cognitive-services/face/)，实现对已有的图像数据进行人脸识别训练。
+**NOTE: **这里借用了**微软的认知服务**（[自行申请](https://docs.microsoft.com/en-us/azure/cognitive-services/speech/https://azure.microsoft.com/zh-cn/try/cognitive-services/?apiSlug=face-api&country=China&allowContact=true&unauthorized=1)），具体调用的API是[Face verification](https://azure.microsoft.com/en-us/services/cognitive-services/face/)，实现对已有的图像数据进行人脸识别训练。
 
 开始对一个人像的训练之前，需要拍摄若干张照片并存入`Security-Door-based-on-raspberry-pi/faceRecognition/img/person`目录下，拍照指令为(宽：640px，高：480px）：
 ```
@@ -25,7 +25,7 @@ raspistill -w 640 -h 480 -o 2.jpg
 raspistill -w 640 -h 480 -o 3.jpg
 ```
 具体的训练过程如下（对代码中KEY做了留白，请自行去[官网申请](https://docs.microsoft.com/en-us/azure/cognitive-services/speech/https://azure.microsoft.com/zh-cn/try/cognitive-services/?apiSlug=face-api&country=China&allowContact=true&unauthorized=1)）（`Security-Door-based-on-raspberry-pi/faceRecognition/trainFace.py`）：
-**NOTE:** 代码中留白的personGroupId请自行定义一个值，该值是一个只由数字、小写字母、“-”、“_”组成的不超过64个字符长的字符串。只有在训练的时候定义不同的值，才能保证如果有建立多个人的人像库的需求时可以共用一个key。
+**NOTE: ** 代码中留白的personGroupId请自行定义一个值，该值是一个只由数字、小写字母、“-”、“_”组成的不超过64个字符长的字符串。只有在训练的时候定义不同的值，才能保证如果有建立多个人的人像库的需求时可以共用一个key。
 ```py
 import json
 
@@ -84,7 +84,7 @@ while(True):
 
 访客触动门禁——门禁连接的姿态传感器接收到振动——播放welcome.wav(`Security-Door-based-on-raspberry-pi/welcome.wav`)，提醒用户有三种选择——开始闪绿灯，提醒访客正在录音，且灯闪频率会随录音终止时间的接近越来越快——访客给出反馈——对访客的命令做出识别（语音转文字）
 
-**NOTE:**这里依然用到了**微软的认知服务**（[自行申请](https://docs.microsoft.com/en-us/azure/cognitive-services/speech/https://azure.microsoft.com/zh-cn/try/cognitive-services/?apiSlug=face-api&country=China&allowContact=true&unauthorized=1)），通过调用微软的[speech-to-text API](https://docs.microsoft.com/en-us/azure/cognitive-services/speech/home), 实现对用户发出需求的音频做出识别。
+**NOTE: **这里依然用到了**微软的认知服务**（[自行申请](https://docs.microsoft.com/en-us/azure/cognitive-services/speech/https://azure.microsoft.com/zh-cn/try/cognitive-services/?apiSlug=face-api&country=China&allowContact=true&unauthorized=1)），通过调用微软的[speech-to-text API](https://docs.microsoft.com/en-us/azure/cognitive-services/speech/home), 实现对用户发出需求的音频做出识别。
 
 在树莓派上安装录音的必要工具包：
 ```
