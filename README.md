@@ -12,7 +12,7 @@
 
 **查看完整操作可直接跳到最后**
 ![原型](https://github.com/Zebra-zzzz/Security-Door-based-on-raspberry-pi/blob/master/prototype.jpg) 
-
+<img src="https://github.com/Zebra-zzzz/Security-Door-based-on-raspberry-pi/blob/master/prototype.jpg" width="200" height="150" alt="原型"/>
 ___
 ## 实现具体功能前的基本操作
 ### 训练访客人像图库
