@@ -10,6 +10,8 @@
 
 3.（彩蛋）访客选择跟门对话，实现实时的语音或文字&图片交流。
 
+**查看完整操作可直接跳到最后**
+
 ___
 ## 实现具体功能前的基本操作
 ### 训练访客人像图库
@@ -90,7 +92,7 @@ while(True):
 
 **具体的逻辑为**：
 
-访客触动门禁——门禁连接的姿态传感器接收到振动——播放welcome.wav(`Security-Door-based-on-raspberry-pi/welcome.wav`)，提醒用户有三种选择——开始闪绿灯，提醒访客正在录音，且灯闪频率会随录音终止时间的接近越来越快——访客给出反馈——对访客的命令做出识别（语音转文字）
+访客触动门禁——门禁连接的姿态传感器接收到振动——播放welcome.wav(`Security-Door-based-on-raspberry-pi/welcome.wav`)，提醒用户有三种选择（`Security-Door-based-on-raspberry-pi/choice.wav`）——开始闪绿灯，提醒访客正在录音，且灯闪频率会随录音终止时间的接近越来越快——访客给出反馈——对访客的命令做出识别（语音转文字）
 
 **NOTE:** 这里依然用到了**微软的认知服务**（[自行申请](https://docs.microsoft.com/en-us/azure/cognitive-services/speech/https://azure.microsoft.com/zh-cn/try/cognitive-services/?apiSlug=face-api&country=China&allowContact=true&unauthorized=1)），通过调用微软的[speech-to-text API](https://docs.microsoft.com/en-us/azure/cognitive-services/speech/home), 实现对用户发出需求的音频做出识别。
 
@@ -113,6 +115,12 @@ pip3 install SpeechRecogniton
 sudo apt-get update
 sudo apt-get -y install python-rpi.gpio
 ```
+
+姿态传感器（ADXL345）接线：SCL：BOARD_5，SDA：BOARD_3，VCC：BOARD_2，GND：BOARD_39
+
+在树莓派上安装姿态传感器的库：
+sudo apt-get install python-smbus i2c-tools
+sudo i2cdetect -y -a 1
 
 **具体的执行代码如下**(对代码中speech_key做了留白，请自行去[官网申请](https://docs.microsoft.com/en-us/azure/cognitive-services/speech/https://azure.microsoft.com/zh-cn/try/cognitive-services/?apiSlug=face-api&country=China&allowContact=true&unauthorized=1)）：
 
@@ -220,6 +228,9 @@ except sr.RequestError as e:
 分析判断由前面访客的需求音频转换而成的文本中是否含有“Open”这一关键词——如有，则继续；如无，则程序结束——播放photo.wav（`Security-Door-based-on-raspberry-pi/photo.wav`），提醒访客将要拍照——红灯频闪，提醒访客正在拍照倒计时，且灯闪频率会随正式开始拍照时间的接近越来越快——发出“咔擦”一声（`Security-Door-based-on-raspberry-pi/yinxiao.wav`），正式开始拍照——与已经训练好的库中的人像做对比，如果置信度达到70%，则开门（这里抽象为舵机转动一定角度并停下）
 
 **NOTE: **这里继续使用**微软的认知服务**（[自行申请](https://docs.microsoft.com/en-us/azure/cognitive-services/speech/https://azure.microsoft.com/zh-cn/try/cognitive-services/?apiSlug=face-api&country=China&allowContact=true&unauthorized=1)），具体调用的API作为前面训练图像的延续依然是[Face verification](https://azure.microsoft.com/en-us/services/cognitive-services/face/)，对应前面的图像训练过程进行分析检测并得出置信度。
+
+发光二极管（红灯）接线：长的引脚接作为信号线的BOARD_13，短的引脚接作为地线的BOARD_39。
+舵机的接线：橙色作为PWM波信号线接BOARD_12，红色作为电源线接BOARD_2，棕色作为地线接BOARD_39。
 
 **具体的执行代码如下**(对代码中face_key做了留白，请自行去[官网申请](https://docs.microsoft.com/en-us/azure/cognitive-services/speech/https://azure.microsoft.com/zh-cn/try/cognitive-services/?apiSlug=face-api&country=China&allowContact=true&unauthorized=1)）：
 
@@ -365,7 +376,7 @@ if "message" in speech_result or "Message" in speech_result:
 
 分析判断由前面访客的需求音频转换而成的文本中是否含有“talk”这一关键词——如有，则继续；如无，则程序结束——（首次使用时将输出一张微信二维码等待用户扫描并在树莓派上登陆）——用户输入文本信息或者图片——门禁给出应答（文字、图像或语音）
 
-**NOTE:** 因为[微软小冰](http://www.msxiaoice.com/)暂未开放API，所以这里利用[itchat模块](http://itchat.readthedocs.io/zh/latest/)，并将消息发送给微信联系人中的[小冰](http://www.msxiaoice.com/)，同时获取[小冰](http://www.msxiaoice.com/)返回的信息，实现间接对[微软小冰](http://www.msxiaoice.com/)的调用。
+**NOTE:** 因为[微软小冰](http://www.msxiaoice.com/)暂未开放API，所以这里利用[itchat模块](http://itchat.readthedocs.io/zh/latest/)，并将消息发送给微信联系人中的[小冰](http://www.msxiaoice.com/)（微信端需要关注公众号“小冰”），同时获取[小冰](http://www.msxiaoice.com/)返回的信息，实现间接对[微软小冰](http://www.msxiaoice.com/)的调用。
 
 **NOTE:** 收发信息和扫描二维码须需要借助显示器或者电脑端的VNC Viewer。
 
@@ -488,3 +499,92 @@ cd ~/Desktop/alexa-avs-sample-app/samples/companionService && npm start
 ```
 cd ~/Desktop/alexa-avs-sample-app/samples/javaclient && mvn exec:exec
 ```
+
+## 完整的操作
+**安装相关的库**
+```
+pip3 install cognitive_face
+pip3 install SpeechRecognition
+pip3 install itchat
+```
+
+**安装相关工具包**
+```
+sudo apt-get update 
+sudo apt-get upgrade 
+sudo apt-get -y install alsa-utils alsa-tools alsa-tools-gui alsamixergui
+sudo apt-get -y install python-rpi.gpio
+sudo apt-get install mplayer2
+sudo apt-get install python-smbus i2c-tools
+sudo i2cdetect -y -a 1
+
+```
+
+**接线**
+
+发光二极管（绿灯）接线：长的引脚接作为信号线的BOARD_11，短的引脚接作为地线的BOARD_39。
+姿态传感器（ADXL345）接线：SCL：BOARD_5，SDA：BOARD_3，VCC：BOARD_2，GND：BOARD_39。
+发光二极管（红灯）接线：长的引脚接作为信号线的BOARD_13，短的引脚接作为地线的BOARD_39。
+舵机的接线：橙色作为PWM波信号线接BOARD_12，红色作为电源线接BOARD_2，棕色作为地线接BOARD_39。
+
+**训练访客人像图库**
+
+在Security-Door-based-on-raspberry-pi/faceRecognition目录下的trainFace.py中添加自定义的一个personGroupld的值，该值是一个只由数字、小写字母、“-”、“_”组成的不超过64个字符长的字符串。只有在训练的时候定义不同的值，才能保证如果有建立多个人的人像库的需求时可以共用一个key。
+
+```
+cd Security-Door-based-on-raspberry-pi/faceRecognition/img/person
+raspistill -w 640 -h 480 -o 1.jpg
+raspistill -w 640 -h 480 -o 2.jpg
+raspistill -w 640 -h 480 -o 3.jpg
+cd ..
+cd ..
+python3 trainFace.py
+```
+**NOTE:** (对代码中的KEY做了留白，请自行去[官网申请](https://docs.microsoft.com/en-us/azure/cognitive-services/speech/https://azure.microsoft.com/zh-cn/try/cognitive-services/?apiSlug=face-api&country=China&allowContact=true&unauthorized=1)）
+
+**主门禁程序执行**
+```
+cd Security-Door-based-on-raspberry-pi
+sudo pigpiod
+python3 main.py
+```
+**NOTE:** 对代码中所有的KEY均做了留白，请自行去[官网申请](https://docs.microsoft.com/en-us/azure/cognitive-services/speech/https://azure.microsoft.com/zh-cn/try/cognitive-services/?apiSlug=face-api&country=China&allowContact=true&unauthorized=1)
+
+**NOTE:** 代码中留白的personGroupId与前面训练时在trainFace.py中定义的值需保持相同。
+
+**调用亚马逊Alexa Voice Service 实现与门禁语音交互**
+获取官方sample app zip：
+```
+cd Desktop
+git clone https://github.com/ajot/alexa-avs-raspberry-pi.git
+```
+
+添加亚马逊开发者账号AVS相关信息（ProductID, ClientID, ClientSecret）：
+```
+cd ~/Desktop/alexa-avs-sample-app
+nano automated_install.sh
+```
+
+在ProductID, ClientID, ClientSecret三栏后面分别填入在官网申请的AVS中对应的信息：
+![填写样例](https://github.com/Zebra-zzzz/Security-Door-based-on-raspberry-pi/blob/master/sample-script.png) 
+
+填写样例：
+* ProductID="RaspberryPi3"
+* ClientID="amzn.xxxxx.xxxxxxxxx"
+* ClientSecret="4e8cb14xxxxxxxxxxxxxxxxxxxxxxxxxxxxx6b4f9"
+
+运行脚本：(仅需首次使用时运行，需要大概20-30分钟）
+```
+bash automated_install.sh
+```
+
+开启新的命令行，授权使用AVS服务：
+```
+cd ~/Desktop/alexa-avs-sample-app/samples/companionService && npm start
+```
+
+再开启另一个新的命令行，运行样例应用：
+```
+cd ~/Desktop/alexa-avs-sample-app/samples/javaclient && mvn exec:exec
+```
+
