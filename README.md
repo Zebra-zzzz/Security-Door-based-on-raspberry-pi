@@ -15,7 +15,7 @@
 **查看完整操作可直接跳到最后**
 
 <img src="https://github.com/Zebra-zzzz/Security-Door-based-on-raspberry-pi/blob/master/prototype.jpg" width="600" height="450" alt="原型1"/>
-<img src="https://github.com/Zebra-zzzz/Security-Door-based-on-raspberry-pi/blob/master/prototype1.jpg" width="600" height="450" alt="原型2"/>
+<img src="https://github.com/Zebra-zzzz/Security-Door-based-on-raspberry-pi/blob/master/prototype2.jpg" width="600" height="450" alt="原型2"/>
 
 ___
 ## 实现具体功能前的基本操作
