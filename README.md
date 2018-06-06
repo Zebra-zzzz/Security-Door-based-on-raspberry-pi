@@ -11,8 +11,8 @@
 3.（彩蛋）访客选择跟门对话，实现实时的语音或文字&图片交流。
 
 **查看完整操作可直接跳到最后**
-![原型](https://github.com/Zebra-zzzz/Security-Door-based-on-raspberry-pi/blob/master/prototype.jpg) 
-<img src="https://github.com/Zebra-zzzz/Security-Door-based-on-raspberry-pi/blob/master/prototype.jpg" width="200" height="150" alt="原型"/>
+
+<img src="https://github.com/Zebra-zzzz/Security-Door-based-on-raspberry-pi/blob/master/prototype.jpg" width="600" height="450" alt="原型"/>
 ___
 ## 实现具体功能前的基本操作
 ### 训练访客人像图库
