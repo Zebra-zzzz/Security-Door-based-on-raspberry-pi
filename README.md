@@ -523,8 +523,11 @@ sudo i2cdetect -y -a 1
 **接线**
 
 发光二极管（绿灯）接线：长的引脚接作为信号线的BOARD_11，短的引脚接作为地线的BOARD_39。
+
 姿态传感器（ADXL345）接线：SCL：BOARD_5，SDA：BOARD_3，VCC：BOARD_2，GND：BOARD_39。
+
 发光二极管（红灯）接线：长的引脚接作为信号线的BOARD_13，短的引脚接作为地线的BOARD_39。
+
 舵机的接线：橙色作为PWM波信号线接BOARD_12，红色作为电源线接BOARD_2，棕色作为地线接BOARD_39。
 
 **训练访客人像图库**
@@ -553,6 +556,7 @@ python3 main.py
 **NOTE:** 代码中留白的personGroupId与前面训练时在trainFace.py中定义的值需保持相同。
 
 **调用亚马逊Alexa Voice Service 实现与门禁语音交互**
+
 获取官方sample app zip：
 ```
 cd Desktop
