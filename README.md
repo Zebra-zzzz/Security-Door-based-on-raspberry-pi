@@ -82,7 +82,7 @@ while(True):
 
 ```
 
-### 访客敲门到门禁对访客所需要求作出反应之前
+### 访客敲门到门禁对访客的需要求作出反应之前
 
 访客首先需要唤醒门禁，让门禁开始工作。门禁则需要提醒用户说出自己需要的服务并进行识别。
 
@@ -209,6 +209,7 @@ except sr.RequestError as e:
 如果访客选择了“Open the door”指令，摄像头将自动获取一张访客的照片，并判断是否给开门。
 
 **具体的逻辑为**：
+
 分析判断由前面访客的需求音频转换而成的文本中是否含有“Open”这一关键词——如有，则继续；如无，则程序结束——播放photo.wav（`Security-Door-based-on-raspberry-pi/photo.wav`），提醒访客将要拍照——红灯频闪，提醒访客正在拍照倒计时，且灯闪频率会随正式开始拍照时间的接近越来越快——发出“咔擦”一声（`Security-Door-based-on-raspberry-pi/yinxiao.wav`），正式开始拍照——与已经训练好的库中的人像做对比，如果置信度达到70%，则开门（这里抽象为舵机转动一定角度并停下）
 
 **NOTE: **这里继续使用**微软的认知服务**（[自行申请](https://docs.microsoft.com/en-us/azure/cognitive-services/speech/https://azure.microsoft.com/zh-cn/try/cognitive-services/?apiSlug=face-api&country=China&allowContact=true&unauthorized=1)），具体调用的API作为前面训练图像的延续依然是[Face verification](https://azure.microsoft.com/en-us/services/cognitive-services/face/)，对应前面的图像训练过程进行分析检测并得出置信度。
@@ -269,4 +270,5 @@ if "open" in speech_result or "Open" in speech_result:
 如果访客选择了“leave a message”指令，门禁将提醒访客开始留言，稍后播放后将确认访客是否需要重新录制。
 
 **具体的逻辑为**：([]部分为循环)
-分析判断由前面访客的需求音频转换而成的文本中是否含有“message”这一关键词——如有，则继续；如无，则程序结束——[播放leave.wav（`Security-Door-based-on-raspberry-pi/leave.wav`），提醒访客将要拍照——绿灯频闪，提醒访客正在录音——录音结束，提醒访客确认留言（`Security-Door-based-on-raspberry-pi/confirm.wav`）——播放留言音频（`Security-Door-based-on-raspberry-pi/message.wav`）——提醒访客做出选择（`Security-Door-based-on-raspberry-pi/save_or_delete.wav`）——分析判断由访客的选择音频转换而成的文本中是否含有“no”这一关键词——如有，则继续；如无，则告知访客留言已保存（`Security-Door-based-on-raspberry-pi/remindsaved.wav`]
+
+分析判断由前面访客的需求音频转换而成的文本中是否含有“message”这一关键词——如有，则继续；如无，则程序结束——[*播放leave.wav（`Security-Door-based-on-raspberry-pi/leave.wav`），提醒访客将要拍照——绿灯频闪，提醒访客正在录音——录音结束，提醒访客确认留言（`Security-Door-based-on-raspberry-pi/confirm.wav`）——播放留言音频（`Security-Door-based-on-raspberry-pi/message.wav`）——提醒访客做出选择（`Security-Door-based-on-raspberry-pi/save_or_delete.wav`）——分析判断由访客的选择音频转换而成的文本中是否含有“no”这一关键词——如有，则继续；如无，则告知访客留言已保存（`Security-Door-based-on-raspberry-pi/remindsaved.wav`*]
