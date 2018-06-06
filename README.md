@@ -18,14 +18,20 @@ ___
 
 **NOTE: **这里借用了**微软的认知服务**（[自行申请](https://docs.microsoft.com/en-us/azure/cognitive-services/speech/https://azure.microsoft.com/zh-cn/try/cognitive-services/?apiSlug=face-api&country=China&allowContact=true&unauthorized=1)），具体调用的API是[Face verification](https://azure.microsoft.com/en-us/services/cognitive-services/face/)，实现对已有的图像数据进行人脸识别训练。
 
+在树莓派上安装 人脸识别的库：
+```
+pip3 install cognitive_face
+```
+
 开始对一个人像的训练之前，需要拍摄若干张照片并存入`Security-Door-based-on-raspberry-pi/faceRecognition/img/person`目录下，拍照指令为(宽：640px，高：480px）：
 ```
 raspistill -w 640 -h 480 -o 1.jpg
 raspistill -w 640 -h 480 -o 2.jpg
 raspistill -w 640 -h 480 -o 3.jpg
 ```
-具体的训练过程如下（对代码中KEY做了留白，请自行去[官网申请](https://docs.microsoft.com/en-us/azure/cognitive-services/speech/https://azure.microsoft.com/zh-cn/try/cognitive-services/?apiSlug=face-api&country=China&allowContact=true&unauthorized=1)）（`Security-Door-based-on-raspberry-pi/faceRecognition/trainFace.py`）：
-**NOTE: ** 代码中留白的personGroupId请自行定义一个值，该值是一个只由数字、小写字母、“-”、“_”组成的不超过64个字符长的字符串。只有在训练的时候定义不同的值，才能保证如果有建立多个人的人像库的需求时可以共用一个key。
+**具体的训练过程如下**（对代码中KEY做了留白，请自行去[官网申请](https://docs.microsoft.com/en-us/azure/cognitive-services/speech/https://azure.microsoft.com/zh-cn/try/cognitive-services/?apiSlug=face-api&country=China&allowContact=true&unauthorized=1)）（`Security-Door-based-on-raspberry-pi/faceRecognition/trainFace.py`）：
+
+**NOTE: **代码中留白的personGroupId请自行定义一个值，该值是一个只由数字、小写字母、“-”、“_”组成的不超过64个字符长的字符串。只有在训练的时候定义不同的值，才能保证如果有建立多个人的人像库的需求时可以共用一个key。
 ```py
 import json
 
@@ -107,6 +113,8 @@ sudo apt-get -y install python-rpi.gpio
 ```
 
 **具体的执行代码如下**(对代码中speech_key做了留白，请自行去[官网申请](https://docs.microsoft.com/en-us/azure/cognitive-services/speech/https://azure.microsoft.com/zh-cn/try/cognitive-services/?apiSlug=face-api&country=China&allowContact=true&unauthorized=1)）：
+
+**NOTE: **代码中留白的personGroupId请自行定义一个值，该值是一个只由数字、小写字母、“-”、“_”组成的不超过64个字符长的字符串。只有在训练的时候定义不同的值，才能保证如果有建立多个人的人像库的需求时可以共用一个key。
 ```py
 import RPi.GPIO as GPIO
 import os
@@ -201,8 +209,46 @@ except sr.RequestError as e:
 如果访客选择了“Open the door”指令，摄像头将自动获取一张访客的照片，并判断是否给开门。
 
 **具体的逻辑为**：
-分析判断由前面访客的需求音频转换而成的文本中是否含有“Open”这一关键词——如有，则继续；如无，则程序结束——播放photo.wav（`Security-Door-based-on-raspberry-pi/photo.wav`），提醒访客将要拍照——红灯频闪，提醒访客正在拍照倒计时，且灯闪频率会随正式开始拍照时间的接近越来越快——发出“咔擦”一声，正式开始拍照——与已经训练好的库中的人像做对比，
+分析判断由前面访客的需求音频转换而成的文本中是否含有“Open”这一关键词——如有，则继续；如无，则程序结束——播放photo.wav（`Security-Door-based-on-raspberry-pi/photo.wav`），提醒访客将要拍照——红灯频闪，提醒访客正在拍照倒计时，且灯闪频率会随正式开始拍照时间的接近越来越快——发出“咔擦”一声，正式开始拍照——与已经训练好的库中的人像做对比，如果正确率达到70%，则开门（这里抽象为舵机转动一定角度并停下）
+
+**NOTE: **这里继续使用**微软的认知服务**（[自行申请](https://docs.microsoft.com/en-us/azure/cognitive-services/speech/https://azure.microsoft.com/zh-cn/try/cognitive-services/?apiSlug=face-api&country=China&allowContact=true&unauthorized=1)），具体调用的API作为前面训练图像的延续依然是[Face verification](https://azure.microsoft.com/en-us/services/cognitive-services/face/)，对应前面的图像训练过程进行分析检测并得出置信度。
+
+**具体的执行代码如下**(对代码中face_key做了留白，请自行去[官网申请](https://docs.microsoft.com/en-us/azure/cognitive-services/speech/https://azure.microsoft.com/zh-cn/try/cognitive-services/?apiSlug=face-api&country=China&allowContact=true&unauthorized=1)）：
+
+**NOTE: ** 代码中留白的personGroupId与前面训练时定义的值需保持相同。
+```py
+if "open" in speech_result or "Open" in speech_result:
+	#Verify your face
+	face_key = ""
+	CF.Key.set(face_key)
+	personGroupId = ""
+	#Try to take a photo for you
+	print("I will take a photo for you, please look at the camera:")
+	os.system('aplay photo.wav')
+	light(13, 6, 0.56, 0.1)
+	os.system('sudo raspistill -o face_recognition.jpg -w 640 -h 480')
+	os.system('aplay yinxiao.wav')
+	testImageFile = "face_recognition.jpg"
+	faces = CF.face.detect(testImageFile)
+
+	if len(faces) != 1:
+		print("There is no face or more than one face in your photo!")
+
+	else:
+		faceIds = [faces[0]['faceId']]
+		res = CF.face.identify(faceIds, personGroupId)
+
+		candidate = res[0]['candidates']
+		if candidate == []:
+			print("No candidates!")
+		else:
+			confidence = candidate[0]['confidence']
+			print("Confidence： " + str(confidence))
+			if confidence >= 0.7:
+				print("Accept!")
+				open_door()
+			else:
+				print("Permission Denied!")
+```
 
 
-
-yourname——zebraname
