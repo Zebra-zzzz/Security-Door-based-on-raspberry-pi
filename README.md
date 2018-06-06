@@ -365,13 +365,9 @@ if "message" in speech_result or "Message" in speech_result:
 
 分析判断由前面访客的需求音频转换而成的文本中是否含有“talk”这一关键词——如有，则继续；如无，则程序结束——（首次使用时将输出一张微信二维码等待用户扫描并在树莓派上登陆）——用户输入文本信息或者图片——门禁给出应答（文字、图像或语音）
 
-**NOTE:** 
+**NOTE:** 因为[微软小冰](http://www.msxiaoice.com/)暂未开放API，所以这里利用[itchat模块](http://itchat.readthedocs.io/zh/latest/)，并将消息发送给微信联系人中的[小冰](http://www.msxiaoice.com/)，同时获取[小冰](http://www.msxiaoice.com/)返回的信息，实现间接对[微软小冰](http://www.msxiaoice.com/)的调用。
 
-因为[微软小冰](http://www.msxiaoice.com/)暂未开放API，所以这里利用[itchat模块](http://itchat.readthedocs.io/zh/latest/)，并将消息发送给微信联系人中的[小冰](http://www.msxiaoice.com/)，同时获取[小冰](http://www.msxiaoice.com/)返回的信息，实现间接对[微软小冰](http://www.msxiaoice.com/)的调用。
-
-**NOTE:** 
-
-收发信息和扫描二维码须需要借助显示器或者电脑端的VNC Viewer。
+**NOTE:** 收发信息和扫描二维码须需要借助显示器或者电脑端的VNC Viewer。
 
 在树莓派上安装微信相关的库：
 ```
@@ -454,10 +450,6 @@ if "talk" in speech_result or "Talk" in speech_result:
 ### 语音交互
 门禁将等待用户语音输入一段话，并做出实时的语音回复。
 
-**NOTE:** 
+**NOTE:** 这里调用了亚马逊
 
-这里调用了亚马逊
-
-**NOTE:** 
-
-收发信息和扫描二维码须需要借助显示器或者电脑端的VNC Viewer。
+**NOTE:** 收发信息和扫描二维码须需要借助显示器或者电脑端的VNC Viewer。
