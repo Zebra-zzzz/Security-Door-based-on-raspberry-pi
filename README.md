@@ -367,11 +367,21 @@ if "message" in speech_result or "Message" in speech_result:
 
 **NOTE:** 
 
-因为[微软小冰](http://www.msxiaoice.com/)暂未开放API，所以这里利用[ichat模块](http://itchat.readthedocs.io/zh/latest/)，并将消息发送给微信联系人中的[小冰](http://www.msxiaoice.com/)，同时获取[小冰](http://www.msxiaoice.com/)返回的信息，实现间接对[微软小冰](http://www.msxiaoice.com/)的调用。
+因为[微软小冰](http://www.msxiaoice.com/)暂未开放API，所以这里利用[itchat模块](http://itchat.readthedocs.io/zh/latest/)，并将消息发送给微信联系人中的[小冰](http://www.msxiaoice.com/)，同时获取[小冰](http://www.msxiaoice.com/)返回的信息，实现间接对[微软小冰](http://www.msxiaoice.com/)的调用。
 
 **NOTE:** 
 
 收发信息和扫描二维码须需要借助显示器或者电脑端的VNC Viewer。
+
+在树莓派上安装微信相关的库：
+```
+pip3 install itchat
+```
+
+在树莓派上安装播放MP3格式的工具包： 
+```
+sudo apt-get install mplayer2
+```
 
 **具体代码如下**：
 
